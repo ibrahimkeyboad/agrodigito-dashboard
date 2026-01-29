@@ -46,7 +46,7 @@ const mergePrices = (farmers: PriceItem[] = [], agrovets: PriceItem[] = []) => {
 };
 
 export function ProductSheet({
-  isOpen,
+  isOpen = false,
   onClose,
   productToEdit,
   onSuccess,

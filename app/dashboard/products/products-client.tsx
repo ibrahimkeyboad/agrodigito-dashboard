@@ -38,11 +38,18 @@ import { ProductSheet } from '@/components/products/ProductSheet';
 import { deleteProductAction, revalidateProducts } from './actions';
 import { useDebounce } from '@/hooks/use-debounce';
 
-const formatPriceRange = (variants: any[]) => {
-  if (!variants || variants.length === 0) return 'N/A';
+const formatPriceRange = (variants: any) => {
+  // ✅ FIX: Strictly check if variants is an array
+  if (!Array.isArray(variants) || variants.length === 0) return 'N/A';
+
   const prices = variants.map((v) => v.amount);
+
+  // Safe check if prices array is empty (defensive programming)
+  if (prices.length === 0) return 'N/A';
+
   const min = Math.min(...prices);
   const max = Math.max(...prices);
+
   if (min === max) return `TSh ${min.toLocaleString()}`;
   return `TSh ${min.toLocaleString()} - ${max.toLocaleString()}`;
 };
@@ -177,12 +184,13 @@ export function ProductsClient({ initialProducts }: ProductsClientProps) {
                     <TableCell className='pl-6 py-3'>
                       <div className='relative h-12 w-12 rounded-xl overflow-hidden border border-slate-100 bg-white shadow-sm'>
                         {product.img ? (
-                          <Image
-                            src={product.img}
+                          <img
+                            src={`${product.img}`}
                             alt={product.name}
-                            fill
                             sizes='48px'
                             className='object-cover'
+                            // unoptimized={true} // ✅ ADD THIS LINE
+                            // priority
                           />
                         ) : (
                           <div className='h-full w-full flex items-center justify-center text-sm font-bold text-slate-300 bg-slate-50'>

@@ -30,7 +30,7 @@ export function OrderDetailsSheet({
   return (
     <Sheet open={open} onOpenChange={onOpenChange}>
       {/* Ensure h-full is present so the flex container fills the screen */}
-      <SheetContent className='sm:max-w-[600px] w-full p-0 h-full flex flex-col bg-slate-50 overflow-hidden'>
+      <SheetContent className='sm:max-w-150 w-full p-0 h-full flex flex-col bg-slate-50 overflow-hidden'>
         {/* Fixed Header */}
         <SheetHeader className='p-6 bg-white border-b border-slate-100 shrink-0'>
           <div className='flex items-center justify-between'>
@@ -117,15 +117,15 @@ export function OrderDetailsSheet({
                 <div className='bg-white p-4 rounded-xl border border-slate-200 shadow-sm text-sm space-y-3'>
                   <div className='flex items-center gap-3'>
                     <div className='h-10 w-10 rounded-full bg-green-100 flex items-center justify-center text-green-700 font-bold shrink-0'>
-                      {order.customerInfo?.name?.charAt(0) || 'C'}
+                      {order.customerInfo?.customerName?.charAt(0) || 'C'}
                     </div>
                     <div className='min-w-0'>
                       <p className='font-medium truncate'>
-                        {order.customerInfo?.name ||
+                        {order.customerInfo?.customerName ||
                           order.shippingAddress.fullName}
                       </p>
                       <p className='text-slate-500 truncate'>
-                        {order.customerInfo?.phone ||
+                        {order.customerInfo?.customerPhone ||
                           order.shippingAddress.phone}
                       </p>
                     </div>

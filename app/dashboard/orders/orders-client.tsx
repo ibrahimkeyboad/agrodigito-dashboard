@@ -74,7 +74,7 @@ export function OrdersClient({ initialOrders }: OrdersClientProps) {
     return initialOrders.filter(
       (order) =>
         order.orderNumber.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        order.customerInfo?.name
+        order.customerInfo?.customerName
           .toLowerCase()
           .includes(searchTerm.toLowerCase()),
     );
@@ -193,11 +193,11 @@ export function OrdersClient({ initialOrders }: OrdersClientProps) {
                     </TableCell>
                     <TableCell>
                       <div className='font-medium text-slate-700'>
-                        {order.customerInfo?.name ||
+                        {order.customerInfo?.customerName ||
                           order.shippingAddress.fullName}
                       </div>
                       <div className='text-xs text-slate-400'>
-                        {order.customerInfo?.phone ||
+                        {order.customerInfo?.customerPhone ||
                           order.shippingAddress.phone}
                       </div>
                     </TableCell>
