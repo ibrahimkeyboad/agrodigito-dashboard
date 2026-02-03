@@ -7,6 +7,11 @@ import {
   ConfirmationResult,
 } from 'firebase/auth';
 import { auth } from '@/lib/firebase/client';
+import {
+  InputOTP,
+  InputOTPGroup,
+  InputOTPSlot,
+} from '@/components/ui/input-otp';
 
 export default function PhoneAuth() {
   const [phoneNumber, setPhoneNumber] = useState('');
@@ -194,12 +199,21 @@ export default function PhoneAuth() {
               </p>
             </div>
 
-            <OTPInput
-              length={6}
+            <InputOTP
+              maxLength={6}
               value={otp}
               onChange={setOtp}
-              disabled={loading}
-            />
+              disabled={loading}>
+              <InputOTPGroup className='gap-2'>
+                {[...Array(6)].map((_, index) => (
+                  <InputOTPSlot
+                    key={index}
+                    index={index}
+                    className='w-12 h-14 text-xl bg-white/5 border-2 border-white/20 rounded-xl text-white focus:border-cyan-400 focus:ring-2 focus:ring-cyan-400/20'
+                  />
+                ))}
+              </InputOTPGroup>
+            </InputOTP>
           </div>
 
           {error && (
