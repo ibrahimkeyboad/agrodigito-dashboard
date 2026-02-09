@@ -354,7 +354,7 @@ export function ProductSheet({
                   </div>
                   <div className='grid gap-1.5 flex-[3]'>
                     <Label className='text-xs font-medium text-green-700'>
-                      Farmer Price (TSh)
+                      Retail Price (TSh)
                     </Label>
                     <Input
                       className='h-9 font-mono'
@@ -367,7 +367,7 @@ export function ProductSheet({
                   </div>
                   <div className='grid gap-1.5 flex-[3]'>
                     <Label className='text-xs font-medium text-blue-700'>
-                      Agrovet Price (TSh)
+                      Wholesale Price (TSh)
                     </Label>
                     <Input
                       className='h-9 font-mono'

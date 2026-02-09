@@ -163,7 +163,7 @@ export function ProductsClient({ initialProducts }: ProductsClientProps) {
                 <TableHead className='py-4'>Product Details</TableHead>
                 <TableHead className='py-4'>Category</TableHead>
                 {/* Removed Stock Status Column */}
-                <TableHead className='py-4'>Pricing (Farmer)</TableHead>
+                <TableHead className='py-4'>Pricing (Retail)</TableHead>
                 <TableHead className='text-right py-4 pr-6'>Actions</TableHead>
               </TableRow>
             </TableHeader>
