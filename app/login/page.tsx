@@ -154,7 +154,7 @@ export default function LoginPage() {
           <h1 className='text-2xl font-bold text-slate-900'>
             AgroDigito Admin
           </h1>
-          <p className='text-slate-500'>Secure access for shop owners</p>
+          <p className='text-slate-500'>Secure access for administrators</p>
         </div>
 
         <Card className='border-slate-200 shadow-xl shadow-slate-200/50'>
