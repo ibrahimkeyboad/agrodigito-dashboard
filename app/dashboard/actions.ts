@@ -1,8 +1,28 @@
 'use server';
 
 import { createClient } from '@/utils/supabase/server';
+import { Order, CustomerInfo } from '@/types';
 
-export async function getDashboardStats() {
+export interface DashboardStats {
+  stats: {
+    totalRevenue: number;
+    ordersCount: number;
+    productsCount: number;
+    usersCount: number;
+  };
+  chartData: { name: string; total: number }[];
+  recentOrders: Order[];
+}
+
+interface SupabaseOrder {
+  id: string;
+  total: number;
+  customer_info: CustomerInfo;
+  created_at: string;
+  status: Order['status'];
+}
+
+export async function getDashboardStats(): Promise<DashboardStats> {
   const supabase = await createClient();
 
   // 1. Fetch Counts (Parallel Requests for speed)
@@ -14,7 +34,7 @@ export async function getDashboardStats() {
   ] = await Promise.all([
     supabase.from('products').select('*', { count: 'exact', head: true }),
     supabase.from('orders').select('*', { count: 'exact', head: true }),
-    supabase.from('profiles').select('*', { count: 'exact', head: true }),
+    supabase.from('profile').select('*', { count: 'exact', head: true }),
     supabase
       .from('orders')
       .select('id, total, customer_info, created_at, status')
@@ -22,8 +42,18 @@ export async function getDashboardStats() {
       .limit(5),
   ]);
 
+  // Map recent orders to match the Order type expected by components
+  const mappedRecentOrders = ((recentOrders as SupabaseOrder[]) || []).map(
+    (order) => ({
+      id: order.id,
+      total: order.total,
+      customerInfo: order.customer_info,
+      createdAt: order.created_at,
+      status: order.status,
+    }),
+  ) as Order[];
+
   // 2. Calculate Revenue (Last 30 days) & Chart Data
-  // Note: For huge datasets, use a Database Function (RPC) instead of fetching all.
   const thirtyDaysAgo = new Date();
   thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
 
@@ -34,7 +64,10 @@ export async function getDashboardStats() {
 
   // Calculate Total Revenue
   const totalRevenue =
-    monthlyOrders?.reduce((sum, order) => sum + order.total, 0) || 0;
+    (monthlyOrders as { total: number; created_at: string }[] | null)?.reduce(
+      (sum, order) => sum + order.total,
+      0,
+    ) || 0;
 
   // Group by Date for the Chart
   const chartMap = new Map<string, number>();
@@ -63,6 +96,6 @@ export async function getDashboardStats() {
       usersCount: usersCount || 0,
     },
     chartData,
-    recentOrders: recentOrders || [],
+    recentOrders: mappedRecentOrders,
   };
 }

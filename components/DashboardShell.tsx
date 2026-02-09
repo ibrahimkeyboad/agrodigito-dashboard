@@ -34,7 +34,7 @@ import { cn } from '@/lib/utils';
 
 export function DashboardShell({ children }: { children: React.ReactNode }) {
   return (
-    <div className='min-h-screen bg-[#F2F5F3] p-4 md:p-6 lg:flex lg:gap-6 font-sans text-slate-900'>
+    <div className='h-screen bg-[#F2F5F3] p-4 md:p-6 lg:flex lg:gap-6 font-sans text-slate-900 overflow-hidden'>
       {/* --- DESKTOP SIDEBAR (Floating Glass Style) --- */}
       <aside className='hidden lg:flex flex-col w-[280px] shrink-0 rounded-3xl bg-white border border-slate-200/60 shadow-xl shadow-slate-200/50 overflow-hidden relative'>
         <div className='absolute top-0 left-0 right-0 h-32 bg-gradient-to-b from-green-50/80 to-transparent pointer-events-none' />
@@ -65,13 +65,11 @@ export function DashboardShell({ children }: { children: React.ReactNode }) {
               href='/dashboard/products'
               icon={Package}
               label='Products'
-              badge={12}
             />
             <NavItem
               href='/dashboard/orders'
               icon={ShoppingCart}
               label='Orders'
-              badge={5}
             />
             <NavItem href='/dashboard/users' icon={Users} label='Users' />
 
@@ -91,7 +89,7 @@ export function DashboardShell({ children }: { children: React.ReactNode }) {
             </Avatar>
             <div className='flex-1 overflow-hidden'>
               <p className='text-sm font-semibold truncate'>Jane Doe</p>
-              <p className='text-xs text-slate-500 truncate'>Agrovet Owner</p>
+              <p className='text-xs text-slate-500 truncate'>Administrator</p>
             </div>
             <Button
               variant='ghost'
@@ -173,11 +171,11 @@ export function DashboardShell({ children }: { children: React.ReactNode }) {
                   className='gap-2 rounded-xl pl-2 pr-3 hover:bg-slate-100 hidden sm:flex'>
                   <Avatar className='h-8 w-8'>
                     <AvatarFallback className='bg-green-600 text-white'>
-                      AO
+                      AD
                     </AvatarFallback>
                   </Avatar>
                   <span className='text-sm font-medium text-slate-700'>
-                    My Shop
+                    Admin Account
                   </span>
                 </Button>
               </DropdownMenuTrigger>
@@ -200,7 +198,7 @@ export function DashboardShell({ children }: { children: React.ReactNode }) {
         </header>
 
         {/* Page Content Scroller */}
-        <ScrollArea className='flex-1 bg-slate-50/30'>
+        <ScrollArea className='flex-1 overflow-y-auto bg-slate-50/30'>
           <main className='p-6 lg:p-10 max-w-7xl mx-auto'>{children}</main>
         </ScrollArea>
       </div>
@@ -232,12 +230,10 @@ function NavItem({
   href,
   icon: Icon,
   label,
-  badge,
-}: {
+}: {    
   href: string;
   icon: any;
   label: string;
-  badge?: number;
 }) {
   const pathname = usePathname();
 
@@ -270,10 +266,6 @@ function NavItem({
 
       {isActive ? (
         <ChevronRight className='h-4 w-4 text-green-200' />
-      ) : badge ? (
-        <span className='flex h-5 min-w-5 items-center justify-center rounded-full bg-slate-100 px-1 text-xs font-bold text-slate-600'>
-          {badge}
-        </span>
       ) : null}
     </Link>
   );
