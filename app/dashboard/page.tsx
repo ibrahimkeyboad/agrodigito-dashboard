@@ -50,7 +50,7 @@ export default async function DashboardPage() {
             </CardDescription>
           </CardHeader>
           <CardContent>
-            <RecentSales orders={recentOrders} />
+            <RecentSales recentOrders={recentOrders} />
           </CardContent>
         </Card>
       </div>
