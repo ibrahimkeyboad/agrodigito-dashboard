@@ -15,7 +15,7 @@ export interface DashboardStats {
 }
 
 interface SupabaseOrder {
-  id: string;
+  id: number;
   total: number;
   customer_info: CustomerInfo;
   created_at: string;
@@ -98,4 +98,23 @@ export async function getDashboardStats(): Promise<DashboardStats> {
     chartData,
     recentOrders: mappedRecentOrders,
   };
+}
+
+export async function getPendingOrders(): Promise<Order[]> {
+  const supabase = await createClient();
+
+  const { data: pendingOrders } = await supabase
+    .from('orders')
+    .select('id, total, customer_info, created_at, status')
+    .eq('status', 'pending')
+    .order('created_at', { ascending: false })
+    .limit(10); // Limit to 10 notifications
+
+  return ((pendingOrders as SupabaseOrder[]) || []).map((order) => ({
+    id: order.id,
+    total: order.total,
+    customerInfo: order.customer_info,
+    createdAt: order.created_at,
+    status: order.status,
+  })) as Order[];
 }

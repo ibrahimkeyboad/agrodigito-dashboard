@@ -2,6 +2,7 @@ import type { Metadata } from 'next';
 import { getAuthenticatedUser } from '@/utils/firebase/server';
 import { DashboardShell } from '@/components/DashboardShell';
 import { OrderListener } from '@/components/orders/order-listener';
+import { getPendingOrders } from './actions';
 import { redirect } from 'next/navigation';
 
 export const metadata: Metadata = {
@@ -25,10 +26,13 @@ export default async function DashboardLayout({
     // Double safety: If verification crashes, redirect to login
     redirect('/login');
   }
+
+  const pendingOrders = await getPendingOrders();
+
   return (
     // This file stays as a Server Component, so metadata works.
     // We render the interactive shell (Client Component) here.
-    <DashboardShell>
+    <DashboardShell initialNotifications={pendingOrders}>
       <OrderListener />
       {children}
     </DashboardShell>
