@@ -1,5 +1,5 @@
 import { notFound } from "next/navigation"
-import { getUserById, getUserInventory, getUserOrders } from "../actions"
+import { getUserById, getUserInventory, getUserOrders, getUserShop } from "../actions"
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
@@ -19,9 +19,10 @@ export default async function UserDetailsPage({ params }: { params: { id: string
   const isAgrovetOwner = user.role?.toLowerCase().includes("owner") || user.role?.toLowerCase().includes("agrovet")
   
   // Fetch data in parallel
-  const [inventory, orders] = await Promise.all([
+  const [inventory, orders, shop] = await Promise.all([
     isAgrovetOwner ? getUserInventory(id) : Promise.resolve([]),
-    getUserOrders(id)
+    getUserOrders(id),
+    isAgrovetOwner ? getUserShop(id) : Promise.resolve(null)
   ])
 
   return (
@@ -100,6 +101,31 @@ export default async function UserDetailsPage({ params }: { params: { id: string
                  <h4 className="text-sm font-medium text-slate-500">Database ID</h4>
                  <p className="text-xs font-mono bg-slate-100 p-1 rounded w-fit">{user.id}</p>
                </div>
+               
+               {/* Shop Information Section */}
+               {shop && (
+                 <>
+                   <div className="col-span-2 pt-4 border-t mt-2">
+                     <h3 className="font-semibold text-lg mb-4 text-green-700">Shop Information</h3>
+                   </div>
+                   <div className="space-y-1">
+                     <h4 className="text-sm font-medium text-slate-500">Shop Name</h4>
+                     <p className="text-base font-medium">{shop.shop_name}</p>
+                   </div>
+                   <div className="space-y-1">
+                     <h4 className="text-sm font-medium text-slate-500">Business Registration</h4>
+                     <p className="text-base">{shop.business_registration || "N/A"}</p>
+                   </div>
+                   <div className="space-y-1">
+                     <h4 className="text-sm font-medium text-slate-500">Currency Settings</h4>
+                     <p className="text-base">{shop.settings?.currency || "Default"}</p>
+                   </div>
+                   <div className="space-y-1">
+                     <h4 className="text-sm font-medium text-slate-500">Shop ID</h4>
+                     <p className="text-xs font-mono bg-slate-100 p-1 rounded w-fit">{shop.id}</p>
+                   </div>
+                 </>
+               )}
             </CardContent>
           </Card>
         </TabsContent>

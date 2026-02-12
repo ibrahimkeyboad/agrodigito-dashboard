@@ -29,7 +29,7 @@ export default async function UsersPage() {
             <TableHeader>
               <TableRow>
                 <TableHead>Full Name</TableHead>
-                <TableHead>Email</TableHead>
+                <TableHead>Shop Name</TableHead>
                 <TableHead>Phone</TableHead>
                 <TableHead>Role</TableHead>
                 <TableHead>Verified</TableHead>
@@ -46,11 +46,11 @@ export default async function UsersPage() {
 
                   {/* Email */}
                   <TableCell>
-                    {user.email || "N/A"}
+                    {user.shop_name || "N/A"}
                   </TableCell>
 
                   {/* Phone */}
-                  <TableCell>
+                  <TableCell> 
                     {user.phone || "N/A"}
                   </TableCell>
 

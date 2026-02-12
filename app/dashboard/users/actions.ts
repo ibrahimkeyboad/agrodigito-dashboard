@@ -16,7 +16,7 @@ export async function getUsers(): Promise<UserProfile[]> {
 
   const { data: profiles, error } = await supabase
     .from("profile")
-    .select("*")
+    .select("*, link:agrovet_shops(shop_name)")
     .order("created_at", { ascending: false })
     .limit(100)
 
@@ -25,7 +25,11 @@ export async function getUsers(): Promise<UserProfile[]> {
     return []
   }
 
-  return profiles as UserProfile[]
+  // Map the result to include shop_name at the top level
+  return (profiles || []).map((profile: any) => ({
+    ...profile,
+    shop_name: profile.link?.[0]?.shop_name || profile.link?.shop_name || null
+  })) as UserProfile[]
 }
 
 // 2. Fetch a single user by ID
