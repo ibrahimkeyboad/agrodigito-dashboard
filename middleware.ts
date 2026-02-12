@@ -4,46 +4,38 @@ import type { NextRequest } from 'next/server';
 export async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
-  // 1. Define routes that require authentication
-  // We want to protect anything starting with /dashboard
+  // Define paths
   const isProtectedRoute = pathname.startsWith('/dashboard');
-
-  // 2. Define routes that are for guests only (like login)
   const isAuthRoute = pathname.startsWith('/login');
 
-  // 3. Get the session cookie
-  // Note: We only check for PRESENCE here. The server verifies validity.
+  // Get session presence (Middleware cannot verify signature, only presence)
   const session = request.cookies.get('__session')?.value;
 
-  // 🛑 SCENARIO 1: User tries to access Dashboard without login
+  // 🛑 SCENARIO 1: Protected Route + No Session -> Go to Login
   if (isProtectedRoute && !session) {
-    // Redirect them to login page
     const loginUrl = new URL('/login', request.url);
-    // Optional: Add where they were trying to go so you can redirect back later
+    // Add the 'redirect' param so we can send them back after login
     loginUrl.searchParams.set('redirect', pathname);
     return NextResponse.redirect(loginUrl);
   }
 
-  // 🛑 SCENARIO 2: User is already logged in but tries to visit Login page
+  // 🛑 SCENARIO 2: Login Page + Active Session -> Go to Dashboard
   if (isAuthRoute && session) {
-    // Redirect them straight to dashboard
     return NextResponse.redirect(new URL('/dashboard', request.url));
   }
 
-  // ✅ SCENARIO 3: Allow the request to proceed
+  // ✅ SCENARIO 3: Allow everything else
   return NextResponse.next();
 }
 
-// Configure which paths the middleware runs on
 export const config = {
   matcher: [
     /*
-     * Match all request paths except for the ones starting with:
-     * - api (API routes)
-     * - _next/static (static files)
-     * - _next/image (image optimization files)
-     * - favicon.ico (favicon file)
-     * - public folder files (images, svgs, etc)
+     * Match all paths except:
+     * 1. /api/ (API routes)
+     * 2. /_next/ (Next.js internals)
+     * 3. /static (inside /public)
+     * 4. all root files (e.g. /favicon.ico)
      */
     '/((?!api|_next/static|_next/image|favicon.ico|.*\\.(?:svg|png|jpg|jpeg|gif|webp)$).*)',
   ],
