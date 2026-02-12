@@ -234,21 +234,21 @@ export function OrdersClient({ initialOrders }: OrdersClientProps) {
                           <DropdownMenuLabel>Update Status</DropdownMenuLabel>
                           <DropdownMenuItem
                             onClick={() =>
-                              handleStatusUpdate(order.id, 'confirmed')
+                              handleStatusUpdate(order.id.toString(), 'confirmed')
                             }>
                             <CheckCircle2 className='mr-2 h-4 w-4 text-blue-600' />{' '}
                             Confirm
                           </DropdownMenuItem>
                           <DropdownMenuItem
                             onClick={() =>
-                              handleStatusUpdate(order.id, 'shipped')
+                              handleStatusUpdate(order.id.toString(), 'shipped')
                             }>
                             <Truck className='mr-2 h-4 w-4 text-indigo-600' />{' '}
                             Ship
                           </DropdownMenuItem>
                           <DropdownMenuItem
                             onClick={() =>
-                              handleStatusUpdate(order.id, 'delivered')
+                              handleStatusUpdate(order.id.toString(), 'delivered')
                             }>
                             <CheckCircle2 className='mr-2 h-4 w-4 text-green-600' />{' '}
                             Mark Delivered
@@ -256,7 +256,7 @@ export function OrdersClient({ initialOrders }: OrdersClientProps) {
                           <DropdownMenuSeparator />
                           <DropdownMenuItem
                             onClick={() =>
-                              handleStatusUpdate(order.id, 'cancelled')
+                              handleStatusUpdate(order.id.toString(), 'cancelled')
                             }
                             className='text-red-600'>
                             <XCircle className='mr-2 h-4 w-4' /> Cancel Order
