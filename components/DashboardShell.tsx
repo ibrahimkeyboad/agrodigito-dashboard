@@ -94,7 +94,7 @@ export function DashboardShell({ children, initialNotifications = [] }: Dashboar
               </AvatarFallback>
             </Avatar>
             <div className='flex-1 overflow-hidden'>
-              <p className='text-sm font-semibold truncate'>Jane Doe</p>
+              {/* <p className='text-sm font-semibold truncate'>Jane Doe</p> */}
               <p className='text-xs text-slate-500 truncate'>Administrator</p>
             </div>
             <Button
