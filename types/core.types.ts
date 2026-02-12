@@ -11,6 +11,7 @@ export interface UserProfile {
   ward: string;
 
   verified: boolean;
+  shop_name?: string;
 
   created_at: string;
   updated_at: string;

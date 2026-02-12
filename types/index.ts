@@ -109,16 +109,16 @@ export type CustomerInfo = {
 };
 
 export interface Order {
-  id: string;
+  id: number;
   orderNumber: string;
   customerInfo: CustomerInfo;
   status:
-    | 'pending'
-    | 'confirmed'
-    | 'processing'
-    | 'shipped'
-    | 'delivered'
-    | 'cancelled';
+  | 'pending'
+  | 'confirmed'
+  | 'processing'
+  | 'shipped'
+  | 'delivered'
+  | 'cancelled';
   items: OrderItem[];
   subtotal: number; // TZS
   // tax: number; // TZS
