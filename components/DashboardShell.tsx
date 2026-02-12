@@ -8,17 +8,16 @@ import {
   Home,
   Menu,
   Package,
-  Search,
   Settings,
   ShoppingCart,
   Users,
   LogOut,
   Leaf,
   ChevronRight,
+  LucideIcon,
 } from 'lucide-react';
 
 import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -28,11 +27,18 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { cn } from '@/lib/utils';
 
-export function DashboardShell({ children }: { children: React.ReactNode }) {
+import { Order } from '@/types';
+
+interface DashboardShellProps {
+  children: React.ReactNode;
+  initialNotifications?: Order[];
+}
+
+export function DashboardShell({ children, initialNotifications = [] }: DashboardShellProps) {
   return (
     <div className='h-screen bg-[#F2F5F3] p-4 md:p-6 lg:flex lg:gap-6 font-sans text-slate-900 overflow-hidden'>
       {/* --- DESKTOP SIDEBAR (Floating Glass Style) --- */}
@@ -82,9 +88,9 @@ export function DashboardShell({ children }: { children: React.ReactNode }) {
         <div className='p-4 mt-auto border-t border-slate-100 bg-slate-50/50'>
           <div className='flex items-center gap-3 p-3 rounded-2xl bg-white border border-slate-100 shadow-sm'>
             <Avatar className='h-10 w-10 border-2 border-white shadow-sm'>
-              <AvatarImage src='/placeholder-user.jpg' alt='User' />
-              <AvatarFallback className='bg-green-100 text-green-700 font-bold'>
-                JD
+              {/* <AvatarImage src='/placeholder-user.jpg' alt='User' /> */}
+              <AvatarFallback className="bg-green-100 text-green-700 font-bold">
+                AD
               </AvatarFallback>
             </Avatar>
             <div className='flex-1 overflow-hidden'>
@@ -142,25 +148,51 @@ export function DashboardShell({ children }: { children: React.ReactNode }) {
           </div>
 
           {/* Search Bar */}
-          <div className='hidden md:flex items-center flex-1 max-w-md mx-6'>
-            <div className='relative w-full group'>
-              <Search className='absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400 group-focus-within:text-green-600 transition-colors' />
-              <Input
-                placeholder='Search anything...'
-                className='pl-10 h-11 rounded-2xl border-slate-200 bg-slate-50 focus-visible:ring-green-500/20 focus-visible:border-green-500 transition-all'
-              />
-            </div>
-          </div>
 
           {/* Right Actions */}
           <div className='flex items-center gap-3'>
-            <Button
-              variant='ghost'
-              size='icon'
-              className='rounded-xl relative text-slate-500 hover:text-slate-700 hover:bg-slate-100'>
-              <Bell className='h-5 w-5' />
-              <span className='absolute top-2.5 right-2.5 h-2 w-2 bg-red-500 rounded-full border-2 border-white' />
-            </Button>
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant='ghost' size='icon' className='rounded-xl relative text-slate-500 hover:text-slate-700 hover:bg-slate-100'>
+                  <Bell className='h-5 w-5' />
+                  {initialNotifications.length > 0 && (
+                    <span className='absolute top-2.5 right-2.5 h-2 w-2 bg-red-500 rounded-full border-2 border-white animate-pulse' />
+                  )}
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end" className="w-80 rounded-xl p-0">
+                 <div className="flex items-center justify-between px-4 py-3 border-b bg-slate-50/50 rounded-t-xl">
+                   <span className="font-semibold text-sm">Notifications</span>
+                   <span className="text-xs text-muted-foreground">{initialNotifications.length} unread</span>
+                 </div>
+                 <div className="max-h-[300px] overflow-y-auto">
+                    {initialNotifications.length === 0 ? (
+                      <div className="p-4 text-center text-sm text-slate-500">
+                        No new notifications
+                      </div>
+                    ) : (
+                      initialNotifications.map((order) => (
+                        <div key={order.id} className="p-4 border-b hover:bg-slate-50 transition-colors cursor-pointer">
+                          <div className="flex gap-3">
+                            <div className="h-8 w-8 rounded-full bg-blue-100 flex items-center justify-center text-blue-600 shrink-0">
+                              <ShoppingCart className="h-4 w-4" />
+                            </div>
+                            <div>
+                              <p className="text-sm font-medium text-slate-900">New Order #{order.orderNumber || String(order.id).slice(0,8)}</p>
+                              <p className="text-xs text-slate-500 mt-0.5">
+                                {new Date(order.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })} • TZS {order.total.toLocaleString()}
+                              </p>
+                            </div>
+                          </div>
+                        </div>
+                      ))
+                    )}
+                 </div>
+                 <div className="p-2 border-t text-center">
+                   <Button variant="ghost" size="sm" className="w-full text-xs h-8">View All Orders</Button>
+                 </div>
+              </DropdownMenuContent>
+            </DropdownMenu>
 
             <div className='h-8 w-px bg-slate-200 mx-1 hidden sm:block' />
 
@@ -182,11 +214,15 @@ export function DashboardShell({ children }: { children: React.ReactNode }) {
               <DropdownMenuContent align='end' className='w-56 rounded-xl p-2'>
                 <DropdownMenuLabel>My Account</DropdownMenuLabel>
                 <DropdownMenuSeparator />
-                <DropdownMenuItem className='rounded-lg cursor-pointer'>
-                  Profile
+                <DropdownMenuItem className='rounded-lg cursor-pointer' asChild>
+                  <Link href="/dashboard/settings">
+                    Settings
+                  </Link>
                 </DropdownMenuItem>
-                <DropdownMenuItem className='rounded-lg cursor-pointer'>
-                  Billing
+                <DropdownMenuItem className='rounded-lg cursor-pointer' asChild>
+                  <Link href="/dashboard/reports">
+                    Reports
+                  </Link>
                 </DropdownMenuItem>
                 <DropdownMenuSeparator />
                 <DropdownMenuItem className='rounded-lg cursor-pointer text-red-600 focus:text-red-700'>
@@ -232,7 +268,7 @@ function NavItem({
   label,
 }: {    
   href: string;
-  icon: any;
+  icon: LucideIcon;
   label: string;
 }) {
   const pathname = usePathname();
